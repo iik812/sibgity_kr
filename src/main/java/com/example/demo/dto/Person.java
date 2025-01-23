@@ -16,6 +16,9 @@ public class Person {
     @NonNull
     private String name;
 
+    public Person(long id, String johnDoe, int i) {
+    }
+
     public int getAge() {
         return age;
     }

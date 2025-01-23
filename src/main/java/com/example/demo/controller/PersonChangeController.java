@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -24,14 +25,21 @@ public class PersonChangeController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addPerson(@RequestBody Person person) {
+    public ResponseEntity<Object> addPerson(@RequestBody Person person) {
         if (person == null || person.getName() == null || person.getName().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Некорректные данные: имя не может быть пустым");
+                    .body(Map.of(
+                            "error", "Некорректные данные",
+                            "message", "Имя не может быть пустым"
+                    ));
         }
 
-        repository.save(person);
-        return ResponseEntity.ok("Запись успешно добавлена");
+        Person savedPerson = repository.save(person);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of(
+                        "message", "Запись успешно добавлена",
+                        "person", savedPerson
+                ));
     }
 
     @DeleteMapping("/{id}")
